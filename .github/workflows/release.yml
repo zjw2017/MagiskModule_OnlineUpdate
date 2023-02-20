@@ -16,11 +16,11 @@ jobs:
           echo "ModuleFolderName=module_files" >> $GITHUB_ENV
       - name: 2. 制作模块
         run: |
-          echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/module_files/module.prop
-          echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/module_files/module.prop
+          echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
+          echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
           zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/module_files/${{ env.ModuleFolderName }}.zip $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}.zip
+          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}.zip
       - name: 3. 创建GitHub Release
         id: create_release
         uses: actions/create-release@latest

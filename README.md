@@ -53,11 +53,11 @@ jobs:
         # 此处可根据您的需求添加您需要的shell语句
       - name: 2. 制作模块
         run: |
-          echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/module_files/module.prop
-          echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/module_files/module.prop
+          echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
+          echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
           zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/module_files/${{ env.ModuleFolderName }}.zip $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}.zip
+          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}.zip
       - name: 3. 创建GitHub Release
         id: create_release
         uses: actions/create-release@latest
