@@ -53,46 +53,40 @@ jobs:
         # 此处可根据您的需求添加您需要的shell语句
       - name: 2. 制作模块
         run: |
+          mkdir -p "$GITHUB_WORKSPACE"/GithubRelease
           echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
           zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}.zip
-      - name: 3. 创建GitHub Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease/${{ env.ModuleFolderName }}.zip
+          cd "$GITHUB_WORKSPACE"
+          touch file.log
+          echo "${{ env.ModuleFolderName }}.zip" > file.log
+      - name: 3.上传到Github Release
+        uses: ncipollo/release-action@main
         with:
-          tag_name: ${{ env.version }}
-        # release_name后面的是Github Release的标题，可自行修改
-        # 若涉及version和versionCode，请按照${{ env.version }}这个格式来写
-          release_name: Your_Module_Name ${{ env.version }}
-          draft: false
-          prerelease: false
-      - name: 4. 上传GitHub Release
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ env.ModuleFolderName }}.zip
-          asset_name: ${{ env.ModuleFolderName }}.zip
-          asset_content_type: application/zip
-      - name: 5. 再次初始化仓库
+          artifacts: ${{ github.workspace }}/GithubRelease/*
+          name: "Your_Module_Name ${{ env.version }}"
+        # name后面的是Github Release的标题，可自行修改
+        # tag若涉及version和versionCode，请按照${{ env.version }}这个格式来写
+          tag: "${{ env.version }}"
+          bodyFile: "${{ github.workspace }}/file.log"
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: 4. 再次初始化仓库
         run: |
           rm -rf $GITHUB_WORKSPACE/*
       - uses: actions/checkout@v2
-      - name: 6. 更新下载链接
-        env:
-          browser_download_url: ${{ steps.upload-release-asset.outputs.browser_download_url }}
+      - name: 5. 更新下载链接
         run: |
         # 请在引号内自行更新您的Github账号信息
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
         # 请在引号内自行更新您的Github账号信息
           git config --global user.name "柚稚的孩纸"
           sed -i '4d' $GITHUB_WORKSPACE/module.json
+        # OWNER、REPO、version分别是用户名、仓库名、版本号，根据自身来修改
+          browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/OWNER/REPO/releases/tags/${{ env.version }} | jq .assets[].browser_download_url | cut -d'"' -f2)
         # 作用是自动更新下载地址，因中国大陆地区问题，添加了代理头(https://ghproxy.com/)
         # 如您的地区可以访问Github相关网站，可以删掉代理头，如
         # sed -i '3a "zipUrl": "'"$browser_download_url"'",' $GITHUB_WORKSPACE/module.json
@@ -102,7 +96,7 @@ jobs:
           git add ./module.json
         # 引号内为提交信息，可根据需要自行修改。若涉及version和versionCode，请按照${{ env.version }}这个格式来写
           git commit -m "v${{ env.version }}" -a
-      - name: 7. 推送到Magisk Module仓库
+      - name: 6. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
