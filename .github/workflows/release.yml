@@ -34,7 +34,6 @@ jobs:
           bodyFile: "${{ github.workspace }}/file.log"
           allowUpdates: true
           artifactErrorsFailBuild: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: 4. 再次初始化仓库
         run: |
           rm -rf $GITHUB_WORKSPACE/*
