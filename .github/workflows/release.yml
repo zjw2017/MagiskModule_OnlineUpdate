@@ -29,7 +29,7 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           artifacts: ${{ github.workspace }}/GithubRelease/*
-          name: "${{ env.ModuleFolderName }}_${{ env.version }}"
+          name: "${{ env.ModuleFolderName }} ${{ env.version }}"
           tag: "${{ env.version }}"
           bodyFile: "${{ github.workspace }}/file.log"
           allowUpdates: true
@@ -49,9 +49,13 @@ jobs:
           jq . $GITHUB_WORKSPACE/module.json > $GITHUB_WORKSPACE/new.json
           rm -rf $GITHUB_WORKSPACE/module.json && mv $GITHUB_WORKSPACE/new.json $GITHUB_WORKSPACE/module.json
           git add ./module.json
-          git commit -m "v${{ env.version }}" -a
-      - name: 6. 推送到Magisk Module仓库
+          if git commit -m "v${{ env.version }}"; then
+              echo "push=true" >> $GITHUB_ENV
+          else
+              echo "push=false" >> $GITHUB_ENV
+          fi
+      - if: ${{ env.push == 'true' }}
+        name: 6. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}

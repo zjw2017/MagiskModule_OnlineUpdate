@@ -66,7 +66,7 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           artifacts: ${{ github.workspace }}/GithubRelease/*
-          name: "Your_Module_Name ${{ env.version }}"
+          name: "${{ env.ModuleFolderName }} ${{ env.version }}"
         # name后面的是Github Release的标题，可自行修改
         # tag若涉及version和versionCode，请按照${{ env.version }}这个格式来写
           tag: "${{ env.version }}"
@@ -95,11 +95,15 @@ jobs:
           rm -rf $GITHUB_WORKSPACE/module.json && mv $GITHUB_WORKSPACE/new.json $GITHUB_WORKSPACE/module.json
           git add ./module.json
         # 引号内为提交信息，可根据需要自行修改。若涉及version和versionCode，请按照${{ env.version }}这个格式来写
-          git commit -m "v${{ env.version }}" -a
-      - name: 6. 推送到Magisk Module仓库
+          if git commit -m "v${{ env.version }}"; then
+              echo "push=true" >> $GITHUB_ENV
+          else
+              echo "push=false" >> $GITHUB_ENV
+          fi
+      - if: ${{ env.push == 'true' }}
+        name: 6. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
 ```
 
@@ -144,8 +148,6 @@ updateJson=<url>
 **Github Actions**做第一步就是读取 **.json文件** 中的**版本号**信息，将其输出到`module.prop`，这也是为什么前文的`module.prop`中为什么**updateJson行下面的空行不能删除**和**不需要书写版本号**的奥秘。第二步，将模块文件压缩为**zip格式**。第三步，将**模块文件上传**至**Github Release**。第四步，**更新.json文件**中的**下载地址**，并根据**预留的Github账户信息**将含有**新版本链接**的.json**文件**推送到**您的仓库**。
 
 做完了这些，您的用户就可以在**Magisk**的**模块**选项卡中检测到新版本并安装到设备上。
-
-但它也有一些劣势。工作流在**更新下载地址**时，若发现**两个版本的.json文件没有差异**时，也会报错**退出**，但此时**Release已经生成**，因此**即使报错**发行的也是**最新版本**。
 
 ### 四、结语
 欢迎大家用来适配自己的模块，同时也期待能有专业人员共同改进本项目，感谢大家！
