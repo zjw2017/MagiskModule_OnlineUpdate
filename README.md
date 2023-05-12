@@ -35,9 +35,12 @@
 name: release
 on:
   push:
-    paths:
-    # 可自行修改module.json的文件名，若修改，请将"module.json"字样全局替换掉，并同步修改根目录下module.json的文件名
-      - "module.json"
+    # 根据以下链接定制您的触发条件
+    # https://docs.github.com/zh/actions/using-workflows/triggering-a-workflow
+    # https://docs.github.com/zh/actions/using-workflows/events-that-trigger-workflows
+    # https://docs.github.com/zh/actions/managing-workflow-runs/skipping-workflow-runs
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   build:

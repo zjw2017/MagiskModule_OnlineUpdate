@@ -1,8 +1,8 @@
 name: release
 on:
   push:
-    paths:
-      - "module.json"
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   build:
