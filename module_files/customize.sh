@@ -9,17 +9,17 @@ SKIPUNZIP=0
 # ARCH（字符串）：设备的 CPU 架构。值为arm, arm64, x86, 或x64
 # IS64BIT(bool)：如果$ARCH是arm64或者x64则值为true
 # API(int)：设备的 API 级别（Android 版本）（例如21，对于 Android 5.0）
-if [ "$API" -ge 28 ]; then
+if [ "$API" -ge 31 ]; then
   ui_print "- Android SDK version: $API"
 else
-  ui_print "*********************************************************"
+  ui_print "*********************************************"
   ui_print "! Unsupported Android SDK version $API"
-  abort "*********************************************************"
+  abort "*********************************************"
 fi
 ui_print "- Magisk version: $MAGISK_VER_CODE"
 if [ "$MAGISK_VER_CODE" -lt 24000 ]; then
-  ui_print "*********************************************************"
+  ui_print "*********************************************"
   ui_print "! Please install Magisk 24.0+"
-  abort "*********************************************************"
+  abort "*********************************************"
 fi
-
+rm -rf /data/system/package_cache
