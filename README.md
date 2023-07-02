@@ -102,8 +102,19 @@ jobs:
           else
               echo "push=false" >> $GITHUB_ENV
           fi
+      - name: 6. 更新 .gitattributes
+        run: |
+        # 请在引号内自行更新您的Github账号信息
+          git config --global user.email "30484319+zjw2017@users.noreply.github.com"
+        # 请在引号内自行更新您的Github账号信息
+          git config --global user.name "柚稚的孩纸"
+          sed -i 's/module_files/${{ env.ModuleFolderName }}/g' $GITHUB_WORKSPACE/.gitattributes
+          git add ./.gitattributes
+          if git commit -m "更新 .gitattributes"; then
+              echo "更新 .gitattributes : Success!"
+          fi
       - if: ${{ env.push == 'true' }}
-        name: 6. 推送到Magisk Module仓库
+        name: 7. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}

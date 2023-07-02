@@ -1,2 +1,15 @@
 # Auto detect text files and perform LF normalization
+# From https://github.com/alexkaratarakis/gitattributes
+# Powered By https://www.richie-bendall.ml/gitattributes-generator/
 * text=auto
+LICENSE text
+*.yml text
+*.md text diff=markdown
+.gitattributes text
+*.sh text eol=lf
+*.txt text
+module_files/META-INF/com/google/android/update-binary text eol=lf
+module_files/META-INF/com/google/android/updater-script text eol=lf
+*.prop text eol=lf
+*.json text
+.gitattributes export-ignore
