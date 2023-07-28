@@ -46,7 +46,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@main
       - name: 1. 准备文件
         run: |
           echo "version=$(jq -r .version $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
@@ -76,10 +76,11 @@ jobs:
           bodyFile: "${{ github.workspace }}/file.log"
           allowUpdates: true
           artifactErrorsFailBuild: true
+          makeLatest: true
       - name: 4. 再次初始化仓库
         run: |
           rm -rf $GITHUB_WORKSPACE/*
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@main
       - name: 5. 更新下载链接
         run: |
         # 请在引号内自行更新您的Github账号信息
