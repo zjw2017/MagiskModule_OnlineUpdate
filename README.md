@@ -49,8 +49,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: 1. 准备文件
         run: |
-          echo "version=$(jq .version $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
-          echo "versionCode=$(jq .versionCode $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
+          echo "version=$(jq -r .version $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
+          echo "versionCode=$(jq -r .versionCode $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
         # ModuleFolderName的变量值需要修改为您模块文件夹的名字
           echo "ModuleFolderName=module_files" >> $GITHUB_ENV
         # 此处可根据您的需求添加您需要的shell语句
@@ -88,7 +88,7 @@ jobs:
           git config --global user.name "柚稚的孩纸"
           sed -i '4d' $GITHUB_WORKSPACE/module.json
         # OWNER、REPO、version分别是用户名、仓库名、版本号，根据自身来修改
-          browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/OWNER/REPO/releases/tags/'${{ env.version }}' | jq .assets[].browser_download_url | cut -d'"' -f2)
+          browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/OWNER/REPO/releases/tags/${{ env.version }} | jq -r .assets[].browser_download_url | cut -d'"' -f2)
         # 作用是自动更新下载地址，因中国大陆地区问题，添加了代理头(https://ghproxy.com/)
         # 如您的地区可以访问Github相关网站，可以删掉代理头，如
         # sed -i '3a "zipUrl": "'"$browser_download_url"'",' $GITHUB_WORKSPACE/module.json
