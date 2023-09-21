@@ -21,7 +21,7 @@
 | .github/workflows/release.yml | 文件 | 工作流文件|
 | module_files | 文件夹 | 存放您模块的相关文件 |
 | module.json | 文件 | Magisk检测模块更新的依赖文件 |
-| module.md | 文件 | Magisk模块检测到更新，点击<br>更新后，将会弹出d 更新日志 |
+| module.md | 文件 | Magisk模块检测到更新，点击<br>更新后，将会弹出更新日志 |
 
 ### **二、适配您的模块**
 
