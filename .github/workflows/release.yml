@@ -21,7 +21,7 @@ jobs:
           echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
           zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease/${{ env.ModuleFolderName }}.zip
+          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease
           cd "$GITHUB_WORKSPACE"
           touch file.log
           echo "${{ env.ModuleFolderName }}.zip" > file.log
@@ -35,11 +35,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           makeLatest: true
-      - name: 4. 再次初始化仓库
-        run: |
-          rm -rf $GITHUB_WORKSPACE/*
-      - uses: actions/checkout@main
-      - name: 5. 更新下载链接
+      - name: 4. 更新下载链接
         run: |
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
           git config --global user.name "柚稚的孩纸"
@@ -54,7 +50,7 @@ jobs:
           else
               echo "push=false" >> $GITHUB_ENV
           fi
-      - name: 6. 更新 .gitattributes
+      - name: 5. 更新 .gitattributes
         run: |
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
           git config --global user.name "柚稚的孩纸"
@@ -64,7 +60,7 @@ jobs:
               echo "更新 .gitattributes : Success!"
           fi
       - if: ${{ env.push == 'true' }}
-        name: 7. 推送到Magisk Module仓库
+        name: 6. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}

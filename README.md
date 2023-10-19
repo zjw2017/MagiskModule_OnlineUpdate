@@ -61,7 +61,7 @@ jobs:
           echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
           cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
           zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease/${{ env.ModuleFolderName }}.zip
+          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease
           cd "$GITHUB_WORKSPACE"
           touch file.log
           echo "${{ env.ModuleFolderName }}.zip" > file.log
@@ -77,11 +77,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           makeLatest: true
-      - name: 4. 再次初始化仓库
-        run: |
-          rm -rf $GITHUB_WORKSPACE/*
-      - uses: actions/checkout@main
-      - name: 5. 更新下载链接
+      - name: 4. 更新下载链接
         run: |
         # 请在引号内自行更新您的Github账号信息
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
@@ -103,7 +99,7 @@ jobs:
           else
               echo "push=false" >> $GITHUB_ENV
           fi
-      - name: 6. 更新 .gitattributes
+      - name: 5. 更新 .gitattributes
         run: |
         # 请在引号内自行更新您的Github账号信息
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
@@ -115,7 +111,7 @@ jobs:
               echo "更新 .gitattributes : Success!"
           fi
       - if: ${{ env.push == 'true' }}
-        name: 7. 推送到Magisk Module仓库
+        name: 6. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}
@@ -151,8 +147,10 @@ updateJson=<url>
 
 7. 发起Action构建，完成发布
 
+### 三、授予Workflow权限
+打开项目页的**Settings**，点击**左侧菜单栏**中的**Actions**，点击**展开菜单**中的**General**，找到**Workflow permissions**，点击**Read and write permissions**，点击**Workflow permissions下方的第一个Save按钮**
 
-### 三、了解项目机制
+### 四、了解项目机制
 本项目利用了**Github Actions**，设计了两种触发方式：**更新.json文件**和**手动触发**。
 
 当您完成代码提交和模块迭代后，就要在 **.json文件** 中配置**版本号**来告知您的用户有新版本，同时，您可以在 **.md文件** 中使用`Markdown`语法书写此次的**更新日志**。不同于系统更新，日志不会叠加。所以您的用户只会看到最新版本的更新日志（除非您更新时保留上次的日志）。
@@ -163,5 +161,5 @@ updateJson=<url>
 
 做完了这些，您的用户就可以在**Magisk**的**模块**选项卡中检测到新版本并安装到设备上。
 
-### 四、结语
+### 五、结语
 欢迎大家用来适配自己的模块，同时也期待能有专业人员共同改进本项目，感谢大家！
