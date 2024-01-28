@@ -34,7 +34,6 @@ fi
 rm -rf /data/system/package_cache
 
 if [[ $KSU == true ]]; then
-
   replace() {
     if [[ "$1" == "file" ]]; then
       remove "$1" "$2"
