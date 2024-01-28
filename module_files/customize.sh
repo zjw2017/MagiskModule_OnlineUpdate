@@ -34,13 +34,14 @@ fi
 rm -rf /data/system/package_cache
 
 if [[ $KSU == true ]]; then
-  mkdir -p "$MODPATH""$2"
-  rm -rf "$MODPATH""$2"
+
   replace() {
     if [[ "$1" == "file" ]]; then
-      remove $1 $2
+      remove "$1" "$2"
     elif [[ "$1" == "directory" ]]; then
-      setfattr -n trusted.overlay.opaque -v y "$MODPATH""$2"
+      dir="$2"
+      dir="${dir%/*}"
+      setfattr -n trusted.overlay.opaque -v y "$MODPATH""$dir"
     fi
   }
   remove() {
@@ -61,7 +62,7 @@ else
     fi
   }
   remove() {
-    replace $1 $2
+    replace "$1" "$2"
   }
 fi
 
