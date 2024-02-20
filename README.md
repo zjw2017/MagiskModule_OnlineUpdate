@@ -57,14 +57,14 @@ jobs:
       - name: 2. 制作模块
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/GithubRelease
-          echo "version=${{ env.version }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
-          echo "versionCode=${{ env.versionCode }}" >>$GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/module.prop
-          cd $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}
-          zip -q -r ${{ env.ModuleFolderName }}.zip *
-          mv $GITHUB_WORKSPACE/${{ env.ModuleFolderName }}/${{ env.ModuleFolderName }}.zip "$GITHUB_WORKSPACE"/GithubRelease
+          echo "version=$version" >>$GITHUB_WORKSPACE/$ModuleFolderName/module.prop
+          echo "versionCode=$versionCode" >>$GITHUB_WORKSPACE/$ModuleFolderName/module.prop
+          cd $GITHUB_WORKSPACE/$ModuleFolderName
+          zip -q -r $ModuleFolderName.zip *
+          mv $GITHUB_WORKSPACE/$ModuleFolderName/$ModuleFolderName.zip "$GITHUB_WORKSPACE"/GithubRelease
           cd "$GITHUB_WORKSPACE"
-          touch file.log
-          echo "${{ env.ModuleFolderName }}.zip" > file.log
+          touch file.md
+          echo "$ModuleFolderName.zip" > file.md
       - name: 3.上传到Github Release
         uses: ncipollo/release-action@main
         with:
@@ -73,7 +73,7 @@ jobs:
         # name后面的是Github Release的标题，可自行修改
         # tag若涉及version和versionCode，请按照${{ env.version }}这个格式来写
           tag: "${{ env.version }}"
-          bodyFile: "${{ github.workspace }}/file.log"
+          bodyFile: "${{ github.workspace }}/file.md"
           allowUpdates: true
           artifactErrorsFailBuild: true
           makeLatest: true
@@ -85,7 +85,13 @@ jobs:
           git config --global user.name "柚稚的孩纸"
           sed -i '4d' $GITHUB_WORKSPACE/module.json
         # OWNER、REPO、version分别是用户名、仓库名、版本号，根据自身来修改
-          browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/OWNER/REPO/releases/tags/${{ env.version }} | jq -r .assets[].browser_download_url | cut -d'"' -f2)
+          browser_download_url=$(
+            curl -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ github.token }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/OWNER/REPO/releases/tags/$version" | jq -r .assets[].browser_download_url | cut -d'"' -f2
+          )
         # 作用是自动更新下载地址，因中国大陆地区问题，添加了代理头(https://ghproxy.com/)
         # 如您的地区可以访问Github相关网站，可以删掉代理头，如
         # sed -i '3a "zipUrl": "'"$browser_download_url"'",' $GITHUB_WORKSPACE/module.json
@@ -93,28 +99,10 @@ jobs:
           jq . $GITHUB_WORKSPACE/module.json > $GITHUB_WORKSPACE/new.json
           rm -rf $GITHUB_WORKSPACE/module.json && mv $GITHUB_WORKSPACE/new.json $GITHUB_WORKSPACE/module.json
           git add ./module.json
-        # 引号内为提交信息，可根据需要自行修改。若涉及version和versionCode，请按照${{ env.version }}这个格式来写
-          if git commit -m "v${{ env.version }}"; then
-              echo "push=true" >> $GITHUB_ENV
-          else
-              echo "push=false" >> $GITHUB_ENV
+        # 引号内为提交信息，可根据需要自行修改
+          if git commit -m "v$version"; then
+              git push
           fi
-      - name: 5. 更新 .gitattributes
-        run: |
-        # 请在引号内自行更新您的Github账号信息
-          git config --global user.email "30484319+zjw2017@users.noreply.github.com"
-        # 请在引号内自行更新您的Github账号信息
-          git config --global user.name "柚稚的孩纸"
-          sed -i 's/module_files/${{ env.ModuleFolderName }}/g' $GITHUB_WORKSPACE/.gitattributes
-          git add ./.gitattributes
-          if git commit -m "更新 .gitattributes"; then
-              echo "更新 .gitattributes : Success!"
-          fi
-      - if: ${{ env.push == 'true' }}
-        name: 6. 推送到Magisk Module仓库
-        uses: ad-m/github-push-action@master
-        with:
-          branch: ${{ github.ref }}
 ```
 
 3. **修改[module.md](https://github.com/zjw2017/MagiskModule_OnlineUpdate/blob/main/module.md)**：文件名可**自定义修改**。模块的**更新日志**，语法为`Markdown`

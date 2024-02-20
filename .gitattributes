@@ -2,14 +2,31 @@
 # From https://github.com/alexkaratarakis/gitattributes
 # Powered By https://www.richie-bendall.ml/gitattributes-generator/
 * text=auto
-LICENSE text
-*.yml text
-*.md text diff=markdown
+
 .gitattributes text
-*.sh text eol=lf
-*.txt text
-module_files/META-INF/com/google/android/update-binary text eol=lf
-module_files/META-INF/com/google/android/updater-script text eol=lf
+
+# GitHub Actions配置文件
+.github/workflows/* text eol=lf
+
+# 文本文件
+*.txt text eol=lf
+
+# 许可证文件
+LICENSE text
+
+# META-INF目录下的脚本文件
+META-INF/com/google/android/* text eol=lf
+
+# 模块属性文件
 *.prop text eol=lf
+
+# 脚本文件
+*.sh text eol=lf
+
+# Markdown文件
+*.md text diff=markdown
+
+# json文件
 *.json text
+
 .gitattributes export-ignore
