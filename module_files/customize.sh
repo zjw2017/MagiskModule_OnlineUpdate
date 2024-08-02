@@ -1,4 +1,5 @@
 SKIPUNZIP=0
+. "$MODPATH"/util_functions.sh
 # 通用部分
 # SKIPUNZIP: 解压方式。0=自动，1=手动
 # MODPATH (path): 当前模块的安装目录
