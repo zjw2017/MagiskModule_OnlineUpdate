@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4.2.2
       - name: 1. 准备文件
         run: |
           echo "version=$(jq -r .version $GITHUB_WORKSPACE/module.json)" >> $GITHUB_ENV
@@ -26,7 +26,7 @@ jobs:
           touch file.md
           echo "$ModuleFolderName.zip" > file.md
       - name: 3.上传到Github Release
-        uses: ncipollo/release-action@main
+        uses: ncipollo/release-action@v1.14.0
         with:
           artifacts: ${{ github.workspace }}/GithubRelease/*
           name: "${{ env.ModuleFolderName }} ${{ env.version }}"
