@@ -18,7 +18,6 @@ on:
       - completed
 jobs:
   pull_request:
-    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: 自动合并 dependabot[bot] 提交的 Pull Request
