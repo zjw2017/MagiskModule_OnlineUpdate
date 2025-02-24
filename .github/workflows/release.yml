@@ -26,7 +26,7 @@ jobs:
           touch file.md
           echo "$ModuleFolderName.zip" > file.md
       - name: 3.上传到Github Release
-        uses: ncipollo/release-action@v1.15.0
+        uses: ncipollo/release-action@v1.16.0
         with:
           artifacts: ${{ github.workspace }}/GithubRelease/*
           name: "${{ env.ModuleFolderName }} ${{ env.version }}"
