@@ -24,6 +24,6 @@ jobs:
       - name: 自动合并 dependabot[bot] 提交的 Pull Request
         uses: pascalgn/automerge-action@v0.16.4
         env:
-          GITHUB_TOKEN: "${{ secrets.GH_TOKEN }}"
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           MERGE_LABELS: ""
           MERGE_METHOD: "squash"
