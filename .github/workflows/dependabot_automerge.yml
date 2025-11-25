@@ -1,5 +1,6 @@
 name: dependabot_automerge
 on:
+  workflow_dispatch:
   pull_request:
     types:
       - labeled
