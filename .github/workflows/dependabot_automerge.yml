@@ -20,7 +20,7 @@ jobs:
   pull_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Debug: 检查 GITHUB_TOKEN 是否存在（不会打印明文）
+      - name: 检查 GITHUB_TOKEN 是否存在（不会打印明文）
         run: |
           if [ -z "${GITHUB_TOKEN:-}" ]; then
             echo "DEBUG: GITHUB_TOKEN is empty"
