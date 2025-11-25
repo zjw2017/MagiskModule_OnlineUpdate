@@ -20,6 +20,19 @@ jobs:
   pull_request:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug: 检查 GITHUB_TOKEN 是否存在（不会打印明文）
+        run: |
+          if [ -z "${GITHUB_TOKEN:-}" ]; then
+            echo "DEBUG: GITHUB_TOKEN is empty"
+            exit 1
+          else
+            echo "DEBUG: GITHUB_TOKEN is set (masked)"
+            echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+            echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: 自动合并 dependabot[bot] 提交的 Pull Request
         uses: pascalgn/automerge-action@v0.16.4
         env:
